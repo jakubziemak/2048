@@ -1,0 +1,135 @@
+/* ----- main page ----- */
+*{
+    margin: 0;
+    padding: 0;
+}
+html{
+    font-family: 'Mukta', sans-serif;
+    background-color: rgb(82, 82, 82);
+    height: 100%;
+    width: 100%;
+}
+body{
+    height: 100%;
+    width: 100%;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+#content{
+    background-color: #FBF8F1;
+    border-radius: 8px;
+    padding: 20px;
+}
+/* ----- options panel ----- */
+#options{
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-areas: 
+        'logo score best'
+        'logo new undo'
+        'p p p';
+    column-gap: 10px;
+    row-gap: 10px;
+}
+#logo{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+h2{
+    grid-area: logo;
+    background-color: #ECCC5F;
+    color: #FAF5F2;
+    border-radius: 5px;
+    font-size: 40px;
+    font-weight: 600;
+    height: 0;
+    padding-top: 100%;
+    position: relative;
+}
+h3{
+    background-color: #3D3A33;
+    color: #FAF5F2;
+    border-radius: 5px;
+    font-size: 20px;
+    font-weight: 600;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+button{
+    background-color: #F75E3E;
+    color: #FAF5F2;
+    border-radius: 5px;
+    border: none;
+    font-family: 'Noto Sans', sans-serif;
+    font-size: 20px;
+    font-weight: 600;
+}
+button:hover{
+    background-color: #fc7d63;
+}
+button:active{
+    box-shadow: inset 0 0 10px black;
+}
+#score{
+    grid-area: score;
+}
+#best{
+    grid-area: best;
+}
+#new{
+    grid-area: new;
+}
+#undo{
+    grid-area: undo;
+}
+#help{
+    grid-area: p;
+    text-align: center;
+}
+/* ----- table ----- */
+table{
+    background-color: #A49381;
+    border-radius: 8px;
+    border-spacing: 8px;
+    margin-top: 20px;
+    max-height: 360px;
+}
+td{
+    background-color: #BFAFA0;
+    border-radius: 5px;
+    height: 80px;
+    width: 80px;
+    z-index: 1;
+}
+h4{
+    position: absolute;
+    transform: translateY(-40px);
+    border-radius: 5px;
+    height: 80px;
+    width: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    transition: all 0s;
+    z-index: 2;
+}
+/* ----- game screens -----*/
+#endScreen{
+    position: absolute;
+    background-color: rgb(87, 87, 87);
+    transform: translateY(-360px);
+    height: 360px;
+    width: 360px;
+    border-radius: 8px;
+    z-index: 4;
+}
+#endScreenCaption{
+    background-color: none;
+}

@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>2048</title>
+        
+        <meta name="viewport" content="width=device-width; initial-scale=1.0">
+        <link rel="preconnect" href="https://fonts.gstatic.com">
+        <link href="https://fonts.googleapis.com/css2?family=Mukta:wght@400;600;800&display=swap" rel="stylesheet">
+        <link rel="stylesheet" type="text/css" href="2048_css.css" media="screen"/>
+    </head>
+    <body>
+        <div id="content">
+            <div id="options">
+                <h2><p id="logo">2048</p></h2>
+                <h3 id="score">score<p id="current-score">0</p></h3>
+                <h3 id="best">best<p id="best-score">0</p></h3>
+                <button id="new" onclick=createGameBoard()>new</button>
+                <button id="undo" onclick=undoMove()>undo</button>
+                <p id="help">Join the numbers to get to the 2048 tile!</p>
+            </div>
+            <table>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+            </table>
+        </div>
+
+        <script src="2048_js.js"></script>
+    </body>
+</html>

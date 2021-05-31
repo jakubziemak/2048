@@ -4,10 +4,11 @@
     padding: 0;
 }
 html{
+    background-color: rgb(87, 87, 87);
     font-family: 'Mukta', sans-serif;
-    background-color: rgb(82, 82, 82);
     height: 100%;
     width: 100%;
+    overflow: hidden;
 }
 body{
     height: 100%;
@@ -21,6 +22,10 @@ body{
     background-color: #FBF8F1;
     border-radius: 8px;
     padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
 }
 /* ----- options panel ----- */
 #options{
@@ -32,6 +37,7 @@ body{
         'p p p';
     column-gap: 10px;
     row-gap: 10px;
+    width: 360px;
 }
 #logo{
     position: absolute;
@@ -72,6 +78,7 @@ button{
 }
 button:hover{
     background-color: #fc7d63;
+    cursor: pointer;
 }
 button:active{
     box-shadow: inset 0 0 10px black;
@@ -98,21 +105,20 @@ table{
     border-radius: 8px;
     border-spacing: 8px;
     margin-top: 20px;
-    max-height: 360px;
+    height: 360px;
+    width: 360px;
 }
 td{
+    position: relative;
     background-color: #BFAFA0;
     border-radius: 5px;
-    height: 80px;
-    width: 80px;
-    z-index: 1;
 }
 h4{
     position: absolute;
-    transform: translateY(-40px);
+    transform: translateY(-50%);
     border-radius: 5px;
-    height: 80px;
-    width: 80px;
+    height: 100%;
+    width: 100%;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -132,4 +138,19 @@ h4{
 }
 #endScreenCaption{
     background-color: none;
+}
+@media only screen and (max-width: 600px) {
+    #content{
+        height: 100%;
+        width: 100%;
+
+    }
+    #options{
+        width: 90vw;
+    }
+    table{
+        width: 90vw;
+        height: 90vw;
+
+    }
 }

@@ -1,12 +1,35 @@
 let gameBoard = new Array();
-let emptyTiles = [];
+let emptyTiles =  new Array();
 let cooldown = 0;
+let touchStartX = 0;
+let touchEndX = 0;
+let touchStartY = 0;
+let touchEndY = 0;
 
 let td = document.querySelectorAll('td')
 let table = document.querySelector('table');
 document.onload = addCellsId(), refreshBestScore();
 document.onkeydown = checkKey;
 
+table.addEventListener('touchstart', (event)=>{
+    touchstartX = event.changedTouches[0].screenX;
+    touchstartY = event.changedTouches[0].screenY;
+});
+table.addEventListener('touchend', (event)=>{
+    touchEndX = event.changedTouches[0].screenX;
+    touchEndY = event.changedTouches[0].screenY;
+    moveByTouch();
+})
+const moveByTouch = ()=>{
+    let x = touchstartX - touchEndX;
+    let y = touchstartY - touchEndY;
+    if (Math.abs(x) < Math.abs(y)){
+        (y > 0)? move(0) : move(1)
+    }
+    else {
+        (x > 0)? move(2) : move(3)
+    }
+}
 function checkKey(e) {;
     if (cooldown == 0){
         cooldown++
@@ -18,12 +41,12 @@ function checkKey(e) {;
             move(1)// down arrow
         }
         else if (e.keyCode == '37'){
-        move(2)// left arrow
+            move(2)// left arrow
         }
         else if (e.keyCode == '39'){
-        move(3)// right arrow
+            move(3)// right arrow
         }
-        setTimeout(()=>{cooldown = 0}, 350)
+        setTimeout(()=>{cooldown = 0}, 360)
     }
 }
 function createGameBoard(){
@@ -59,10 +82,10 @@ function generateTile(){
     cell = document.getElementById(cellId)
     cell.innerHTML = `<h4>${generatedNumber}</h4>`;
 
-    cell.childNodes[0].style.transform = `translateY(-40px) scale(0)`
+    cell.childNodes[0].style.transform = `translateY(-50%) scale(0)`
     cell.childNodes[0].style.backgroundColor = `${Colors[cell.childNodes[0].innerHTML]}`
     setTimeout(()=>{cell.childNodes[0].style.transition = 'all .2s'
-        cell.childNodes[0].style.transform = `translateY(-40px) scale(1)`}, 30)
+        cell.childNodes[0].style.transform = `translateY(-50%) scale(1)`}, 30)
 
     score.innerHTML = Number(score.innerHTML) + generatedNumber
     bestScore(score)
@@ -81,6 +104,7 @@ function addCellsId(){
 function move(direction){
     convertTableToArray();
     let checkToGenerateTile = 0;
+    let sideLength = Number(document.getElementById('00').offsetWidth);
     if(direction == 0 || direction == 2){
         for (let r = 0, row; row = table.rows[r]; r++) {
             for (let i = 0, cell; cell = row.cells[i]; i++){
@@ -101,7 +125,7 @@ function move(direction){
                         if(upperCell.innerHTML !== '' && cell.childNodes[0].innerHTML == upperCell.childNodes[0].innerHTML && upperCell.className !== 'summed'){
                             
                             upperCell.innerHTML = upperCell.innerHTML + cell.innerHTML;
-                            moveTile(upperCell.childNodes[1], cell, 'Y', upperCell);
+                            moveTile(upperCell.childNodes[1], cell, 'Y', upperCell, sideLength);
                             toSumUp(upperCell);
                             upperCell.className = 'summed';
                             checkToGenerateTile++
@@ -113,8 +137,8 @@ function move(direction){
                             aboveDestinationCell.innerHTML += cell.innerHTML
                             
                             aboveDestinationCell.childNodes[0].style.transition = `all 0.3s`;
-                            setTimeout(()=>{aboveDestinationCell.childNodes[0].style.transform = `translateY(-40px)`}, 10);                            
-                            moveTile(aboveDestinationCell.childNodes[1], cell, 'Y', aboveDestinationCell);
+                            setTimeout(()=>{aboveDestinationCell.childNodes[0].style.transform = `translateY(-50%)`}, 10);                            
+                            moveTile(aboveDestinationCell.childNodes[1], cell, 'Y', aboveDestinationCell, sideLength);
                             toSumUp(aboveDestinationCell);
                             aboveDestinationCell.className = 'summed';
                             checkToGenerateTile++
@@ -123,7 +147,7 @@ function move(direction){
                         else if(avalibleTileRow.length !== 0 && avalibleTileRow[0][0] < r){
 
                             destinationCell.innerHTML = cell.innerHTML;
-                            moveTile(destinationCell.childNodes[0], cell, 'Y', destinationCell);
+                            moveTile(destinationCell.childNodes[0], cell, 'Y', destinationCell, sideLength);
                             checkToGenerateTile++
                         }
                         else continue
@@ -141,7 +165,7 @@ function move(direction){
                         if(leftCell.innerHTML !== '' && cell.childNodes[0].innerHTML == leftCell.childNodes[0].innerHTML && leftCell.className !== 'summed'){
                             
                             leftCell.innerHTML = leftCell.innerHTML + cell.innerHTML;
-                            moveTile(leftCell.childNodes[1], cell, 'X', leftCell);
+                            moveTile(leftCell.childNodes[1], cell, 'X', leftCell, sideLength);
                             toSumUp(leftCell);
                             leftCell.className = 'summed';
                             checkToGenerateTile++
@@ -153,8 +177,8 @@ function move(direction){
                                 leftOfDestinationCell.innerHTML += cell.innerHTML
                                 
                                 leftOfDestinationCell.childNodes[0].style.transition = `all 0.3s`;
-                                setTimeout(()=>{leftOfDestinationCell.childNodes[0].style.transform = `translateY(-40px)`}, 10);                            
-                                moveTile(leftOfDestinationCell.childNodes[1], cell, 'X', leftOfDestinationCell);
+                                setTimeout(()=>{leftOfDestinationCell.childNodes[0].style.transform = `translateY(-50%)`}, 10);                            
+                                moveTile(leftOfDestinationCell.childNodes[1], cell, 'X', leftOfDestinationCell, sideLength);
                                 toSumUp(leftOfDestinationCell);
                                 leftOfDestinationCell.className = 'summed';
                                 checkToGenerateTile++
@@ -162,7 +186,7 @@ function move(direction){
                         else if(avalibleTileIndex.length !== 0 && avalibleTileIndex[0][1] < i){
 
                             destinationCell.innerHTML = cell.innerHTML;
-                            moveTile(destinationCell.childNodes[0], cell, 'X', destinationCell);
+                            moveTile(destinationCell.childNodes[0], cell, 'X', destinationCell, sideLength);
                             checkToGenerateTile++
                         }
                         else continue
@@ -192,7 +216,7 @@ function move(direction){
                         if(lowerCell.innerHTML !== '' && cell.childNodes[0].innerHTML == lowerCell.childNodes[0].innerHTML && lowerCell.className !== 'summed'){
                             
                             lowerCell.innerHTML = lowerCell.innerHTML + cell.innerHTML;
-                            moveTile(lowerCell.childNodes[1], cell, 'Y', lowerCell);
+                            moveTile(lowerCell.childNodes[1], cell, 'Y', lowerCell, sideLength);
                             toSumUp(lowerCell);
                             lowerCell.className = 'summed';
                             checkToGenerateTile++
@@ -204,8 +228,8 @@ function move(direction){
                             belowDestinationCell.innerHTML += cell.innerHTML
                             
                             belowDestinationCell.childNodes[0].style.transition = `all 0.3s`;
-                            setTimeout(()=>{belowDestinationCell.childNodes[0].style.transform = `translateY(-40px)`}, 10);                            
-                            moveTile(belowDestinationCell.childNodes[1], cell, 'Y', belowDestinationCell);
+                            setTimeout(()=>{belowDestinationCell.childNodes[0].style.transform = `translateY(-50%)`}, 10);                            
+                            moveTile(belowDestinationCell.childNodes[1], cell, 'Y', belowDestinationCell, sideLength);
                             toSumUp(belowDestinationCell);
                             belowDestinationCell.className = 'summed';
                             checkToGenerateTile++
@@ -214,7 +238,7 @@ function move(direction){
                         else if(avalibleTileRow.length !== 0 && avalibleTileRow[lastElem][0] > r){
                         
                             destinationCell.innerHTML = cell.innerHTML;
-                            moveTile(destinationCell.childNodes[0], cell, 'Y', destinationCell);
+                            moveTile(destinationCell.childNodes[0], cell, 'Y', destinationCell, sideLength);
                             checkToGenerateTile++;
                         }
                         else continue
@@ -233,7 +257,7 @@ function move(direction){
                         if(rightCell.innerHTML !== '' && cell.childNodes[0].innerHTML == rightCell.childNodes[0].innerHTML && rightCell.className !== 'summed'){
                             
                             rightCell.innerHTML = rightCell.innerHTML + cell.innerHTML;
-                            moveTile(rightCell.childNodes[1], cell, 'X', rightCell);
+                            moveTile(rightCell.childNodes[1], cell, 'X', rightCell, sideLength);
                             toSumUp(rightCell);
                             rightCell.className = 'summed';
                             checkToGenerateTile++;
@@ -246,8 +270,8 @@ function move(direction){
                                 rightOfDestinationCell.innerHTML += cell.innerHTML;
                                 
                                 rightOfDestinationCell.childNodes[0].style.transition = `all 0.3s`;
-                                setTimeout(()=>{rightOfDestinationCell.childNodes[0].style.transform = `translateY(-40px)`}, 10);                            
-                                moveTile(rightOfDestinationCell.childNodes[1], cell, 'X', rightOfDestinationCell);
+                                setTimeout(()=>{rightOfDestinationCell.childNodes[0].style.transform = `translateY(-50%)`}, 10);                            
+                                moveTile(rightOfDestinationCell.childNodes[1], cell, 'X', rightOfDestinationCell, sideLength);
                                 toSumUp(rightOfDestinationCell);
                                 rightOfDestinationCell.className = 'summed';
                                 checkToGenerateTile++;
@@ -255,7 +279,7 @@ function move(direction){
                         else if(avalibleTileIndex.length !== 0 && avalibleTileIndex[lastElem][1] > i){
 
                             destinationCell.innerHTML = cell.innerHTML;
-                            moveTile(destinationCell.childNodes[0], cell, 'X', destinationCell);
+                            moveTile(destinationCell.childNodes[0], cell, 'X', destinationCell, sideLength);
                             checkToGenerateTile++;
                         }
                         else continue
@@ -275,13 +299,13 @@ function move(direction){
         searchForLegitMoves();
     }
 }
-function moveTile(tileToStyle, currentTile, axis, destination){
-    if(axis == 'Y'){tileToStyle.style.transform = `translateY(${((Number(currentTile.id[0]) - Number(destination.id[0]))*88) - 40}px)`;}
-    else if(axis == 'X'){tileToStyle.style.transform = `translateX(${((Number(currentTile.id[1]) - Number(destination.id[1]))*88)}px) translateY(-40px)`;}
+function moveTile(tileToStyle, currentTile, axis, destination, sideLength){
+    if(axis == 'Y'){tileToStyle.style.transform = `translateY(${((Number(currentTile.id[0]) - Number(destination.id[0]))*(sideLength+8)) - (sideLength*0.5)}px)`;}
+    else if(axis == 'X'){tileToStyle.style.transform = `translateX(${((Number(currentTile.id[1]) - Number(destination.id[1]))*(sideLength+8))}px) translateY(-50%)`;}
 
     setTimeout(()=>{
         tileToStyle.style.transition = `all 0.3s`;
-        tileToStyle.style.transform = `translateY(-40px)`;}, 30)
+        tileToStyle.style.transform = `translateY(-50%)`;}, 30)
 
     currentTile.innerHTML = '';
     destination.style = '';
@@ -389,4 +413,3 @@ let Colors = {
     1024: '#e7c257',
     2048: '#e8bf4e'
 }
-

@@ -18,32 +18,42 @@
                 <button id="undo" onclick=undoMove()>undo</button>
                 <p id="help">Join the numbers to get to the 2048 tile!</p>
             </div>
-            <table>
-                <tr>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                </tr>
-            </table>
+            <div id="tableContainer">
+                <table>
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                </table>
+                <div id="winScreen">
+                    <h5>You win!</h5>
+                    <h6 onclick=keepGoing()>keep going</h6>
+                </div>
+                <div id="endScreen">
+                    <h5>Game over!</h5>
+                    <h6 onclick=createGameBoard()>try again</h6>                    
+                </div>
+            </div>
         </div>
 
         <script src="2048_js.js"></script>

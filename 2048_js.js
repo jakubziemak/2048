@@ -55,11 +55,13 @@ function createGameBoard(){
             cell.innerHTML = null
         }
     }
-    let score = document.getElementById('current-score')
-    score.innerHTML = 0
-    document.getElementById('undo').disabled = false
+    let endScreen = document.getElementById('endScreen');
+    let score = document.getElementById('current-score');
+    score.innerHTML = 0;
+    document.getElementById('undo').disabled = false;
     generateTile();
     setTimeout(()=>{generateTile()}, 30);
+    endScreen.style.height = '0';
 };
 function findEmptyTiles(){
     emptyTiles = []
@@ -77,7 +79,6 @@ function generateTile(){
     let row = randomTile[1];
     let cellId = index + row;
     let generatedNumber = generateNumber()
-    let score = document.getElementById('current-score')
     
     cell = document.getElementById(cellId)
     cell.innerHTML = `<h4>${generatedNumber}</h4>`;
@@ -86,9 +87,6 @@ function generateTile(){
     cell.childNodes[0].style.backgroundColor = `${Colors[cell.childNodes[0].innerHTML]}`
     setTimeout(()=>{cell.childNodes[0].style.transition = 'all .2s'
         cell.childNodes[0].style.transform = `translateY(-50%) scale(1)`}, 30)
-
-    score.innerHTML = Number(score.innerHTML) + generatedNumber
-    bestScore(score)
 };
 function generateNumber(){
     let tileValue = Math.random()<0.8 ? 2 : 4;
@@ -311,18 +309,30 @@ function moveTile(tileToStyle, currentTile, axis, destination, sideLength){
     destination.style = '';
 }
 function toSumUp(tile){
+    let score = document.getElementById('current-score')
     setTimeout(()=>{
-    tile.innerHTML = `<h4>${Number(tile.childNodes[0].innerHTML) + Number(tile.childNodes[0].innerHTML)}</h4>`;
-    tile.style.transition = 'all .1s';
-    tile.style.transform = `scale(1.1)`;
-    tile.childNodes[0].style.backgroundColor = `${Colors[tile.childNodes[0].innerHTML]}`;
-    if (tile.childNodes[0].innerHTML>4){tile.childNodes[0].style.color = `white`};
-    setTimeout(()=>{tile.style.transform = `scale(1)`}, 100)}, 300);
+        tile.innerHTML = `<h4>${Number(tile.childNodes[0].innerHTML) + Number(tile.childNodes[0].innerHTML)}</h4>`;
+        tile.style.transition = 'all .1s';
+        tile.style.transform = `scale(1.1)`;
+        tile.childNodes[0].style.backgroundColor = `${Colors[tile.childNodes[0].innerHTML]}`;
+        if (tile.childNodes[0].innerHTML>4){tile.childNodes[0].style.color = `white`};
+        setTimeout(()=>{tile.style.transform = `scale(1)`}, 100)
 
-    tile.className = 'summed';
-    if(tile.childNodes[0].innerHTML == 2048){
-        cooldown = 1
-    }
+        score.innerHTML = Number(score.innerHTML) + Number(tile.childNodes[0].innerHTML);
+        bestScore(score);
+
+        tile.className = 'summed';
+        if(tile.childNodes[0].innerHTML == 2048){
+            document.onkeydown = '';
+            let winScreen = document.getElementById('winScreen');
+            winScreen.style.transition = 'all 0.5s'
+            winScreen.style.height = '100%';
+        }
+    }, 300);
+}
+function keepGoing(){
+    document.getElementById('winScreen').style.height = '0'
+    document.onkeydown = checkKey;
 }
 function searchForLegitMoves(){
     let arr = [];
@@ -340,23 +350,10 @@ function searchForLegitMoves(){
         }
     }
     if(arr.some(x => x == true) == false){
+        let endScreen = document.getElementById('endScreen');
         document.getElementById('undo').disabled = true;
-        let table = document.querySelector('#content');
-        let endScreen = document.createElement('div');
-        let h3 = document.createElement('h3');
-
-        table.appendChild(endScreen);
-        endScreen.appendChild(h3);
-        endScreen.id = 'endScreen';
-        h3.id = 'endScreenCaption'
-
-        h3.innerHTML = `YOU LOSE <br><span>TRY AGAIN</span>`
-
-        endScreen.style.opacity = '0';
-        endScreen.style.transition = 'all .3s';
-        setTimeout(()=>{endScreen.style.opacity = '60%'}, 10);
-        h3.style.opacity = '100%'
-
+        endScreen.style.transition = 'all 0.5s'
+        endScreen.style.height = '100%';
     }
 }
 function bestScore(score){

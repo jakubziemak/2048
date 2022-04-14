@@ -1,61 +1,17 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <title>2048</title>
-        
-        <meta name="viewport" content="width=device-width; initial-scale=1.0">
-        <link rel="preconnect" href="https://fonts.gstatic.com">
-        <link href="https://fonts.googleapis.com/css2?family=Mukta:wght@400;600;800&display=swap" rel="stylesheet">
-        <link rel="stylesheet" type="text/css" href="2048_css.css" media="screen"/>
-    </head>
-    <body>
-        <div id="content">
-            <div id="options">
-                <h2><p id="logo">2048</p></h2>
-                <h3 id="score">score<p id="current-score">0</p></h3>
-                <h3 id="best">best<p id="best-score">0</p></h3>
-                <button id="new" onclick=createGameBoard()>new</button>
-                <button id="undo" onclick=undoMove()>undo</button>
-                <p id="help">Join the numbers to get to the 2048 tile!</p>
-            </div>
-            <div id="tableContainer">
-                <table>
-                    <tr>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                    </tr>
-                    <tr>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                    </tr>
-                    <tr>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                    </tr>
-                    <tr>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                    </tr>
-                </table>
-                <div id="winScreen">
-                    <h5>You win!</h5>
-                    <h6 onclick=keepGoing()>keep going</h6>
-                </div>
-                <div id="endScreen">
-                    <h5>Game over!</h5>
-                    <h6 onclick=createGameBoard()>try again</h6>                    
-                </div>
-            </div>
-        </div>
+  <head>
+    <title>2048</title>
 
-        <script src="2048_js.js"></script>
-    </body>
+    <meta name="viewport" content="width=device-width; initial-scale=1.0" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Mukta:wght@400;600;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" type="text/css" href="styles.css" media="screen" />
+  </head>
+  <body>
+    <script src="main.js"></script>
+  </body>
 </html>

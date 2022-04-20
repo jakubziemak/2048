@@ -9,6 +9,9 @@ class Game {
                  [0, 0, 0, 0], 
                  [0, 0, 0, 0], 
                  [0, 0, 0, 0]]
+    summed = []
+    tiles = {}
+    moved = false
 
     newTile = () => {
         const val = Math.random() < 0.5 ? 2 : 4
@@ -39,18 +42,22 @@ class Game {
                 this.moveDown()
                 break
         }
+        if (this.moved){
+            this.newTile()
+            this.moved = false
+        }
         console.table(this.gameBoard)
     }
     moveUp = () => {
         this.cellsToMove().forEach(cell => {
-            const free = this.freeSpaces().filter(([x, y]) => y == cell.posX)[0]
+            const free = this.freeSpaces().filter(([y, x]) => x == cell.posX && y < cell.posY)[0]
 
             if (cell.posY == 0) return
 
             if (this.gameBoard[cell.posY - 1][cell.posX] == cell.val){
                 cell.val += cell.val
                 this.updateGameBoard(cell, [cell.posY - 1, cell.posX])
-            } else if (free && free [0] > 0 && this.gameBoard[free[0] - 1][free[1]] == cell.val){
+            } else if (free && free[0] > 0 && this.gameBoard[free[0] - 1][free[1]] == cell.val){
                 cell.val += cell.val
                 this.updateGameBoard(cell, [free[0] - 1, free[1]])
             } else if (free && cell.posY > free[0]){
@@ -60,14 +67,14 @@ class Game {
     }
     moveDown = () => {
         this.cellsToMove().reverse().forEach(cell => {
-            const free = this.freeSpaces().filter(([x, y]) => y == cell.posX).reverse()[0]
+            const free = this.freeSpaces().filter(([y, x]) => x == cell.posX && y > cell.posY).reverse()[0]
 
             if (cell.posY == 3) return
             
             if (this.gameBoard[cell.posY + 1][cell.posX] == cell.val){
                 cell.val += cell.val
                 this.updateGameBoard(cell, [cell.posY + 1, cell.posX])
-            } else if (free && free [0] < 3 && this.gameBoard[free[0] + 1][free[1]] == cell.val){
+            } else if (free && free[0] < 3 && this.gameBoard[free[0] + 1][free[1]] == cell.val){
                 cell.val += cell.val
                 this.updateGameBoard(cell, [free[0] + 1, free[1]])
             } else if (free && cell.posY < free[0]){
@@ -77,14 +84,14 @@ class Game {
     }
     moveLeft = () => {
         this.cellsToMove().forEach(cell => {
-            const free = this.freeSpaces().filter(([x, y]) => x == cell.posY)[0]
+            const free = this.freeSpaces().filter(([y, x]) => y == cell.posY && x < cell.posX)[0]
 
             if (cell.posX == 0) return
             
             if (this.gameBoard[cell.posY][cell.posX - 1] == cell.val){
                 cell.val += cell.val
                 this.updateGameBoard(cell, [cell.posY, cell.posX - 1])
-            } else if (free && free [1] > 0 && this.gameBoard[free[0]][free[1] - 1] == cell.val){
+            } else if (free && free[1] > 0 && this.gameBoard[free[0]][free[1] - 1] == cell.val){
                 cell.val += cell.val
                 this.updateGameBoard(cell, [free[0], free[1] - 1])
             } else if (free && cell.posX > free[1]){
@@ -94,14 +101,14 @@ class Game {
     }
     moveRight = () => {
         this.cellsToMove().reverse().forEach(cell => {
-            const free = this.freeSpaces().filter(([x, y]) => x == cell.posY).reverse()[0]
+            const free = this.freeSpaces().filter(([y, x]) => y == cell.posY && x > cell.posX).reverse()[0]
 
             if (cell.posX == 3) return
             
             if (this.gameBoard[cell.posY][cell.posX + 1] == cell.val){
                 cell.val += cell.val
                 this.updateGameBoard(cell, [cell.posY, cell.posX + 1])
-            } else if (free && free [1] < 3 && this.gameBoard[free[0]][free[1] + 1] == cell.val){
+            } else if (free && free[1] < 3 && this.gameBoard[free[0]][free[1] + 1] == cell.val){
                 cell.val += cell.val
                 this.updateGameBoard(cell, [free[0], free[1] + 1])
             } else if (free && cell.posX < free[1]){
@@ -115,6 +122,8 @@ class Game {
 
         this.gameBoard[posY][posX] = 0
         this.gameBoard[targetY][targetX] = val
+
+        this.moved = true
     }
     cellsToMove = () => {
         const cells = this.gameBoard
@@ -130,17 +139,3 @@ document.addEventListener('keydown', (e) => {
     e.preventDefault()
     game.move(e.key)
 })
-
-let Colors = {
-    2: '#eee6db',
-    4: '#ece0c8',
-    8: '#efb27c',
-    16: '#f3966a',
-    32: '#f27d62',
-    64: '#f46042',
-    128: '#ebce77',
-    256: '#eccb67',
-    512: '#edc759',
-    1024: '#e7c257',
-    2048: '#e8bf4e'
-}

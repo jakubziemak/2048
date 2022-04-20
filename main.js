@@ -45,8 +45,7 @@ class Game {
         this.cellsToMove().forEach(cell => {
             const free = this.freeSpaces().filter(([x, y]) => y == cell.posY)[0]
             if(free && cell.posX > free[0]){
-                this.gameBoard[cell.posX][cell.posY] = 0
-                this.gameBoard[free[0]][free[1]] = cell.val
+                this.updateGameBoard(cell.posX, cell.posY, cell.val, free[0], free[1])
             }
         })
     }
@@ -54,8 +53,7 @@ class Game {
         this.cellsToMove().reverse().forEach(cell => {
             const free = this.freeSpaces().filter(([x, y]) => y == cell.posY).reverse()[0]
             if(free && cell.posX < free[0]){
-                this.gameBoard[cell.posX][cell.posY] = 0
-                this.gameBoard[free[0]][free[1]] = cell.val
+                this.updateGameBoard(cell.posX, cell.posY, cell.val, free[0], free[1])
             }
         })
     }
@@ -63,8 +61,7 @@ class Game {
         this.cellsToMove().forEach(cell => {
             const free = this.freeSpaces().filter(([x, y]) => x == cell.posX)[0]
             if(free && cell.posY > free[1]){
-                this.gameBoard[cell.posX][cell.posY] = 0
-                this.gameBoard[free[0]][free[1]] = cell.val
+                this.updateGameBoard(cell.posX, cell.posY, cell.val, free[0], free[1])
             }
         })
     }
@@ -72,10 +69,13 @@ class Game {
         this.cellsToMove().reverse().forEach(cell => {
             const free = this.freeSpaces().filter(([x, y]) => x == cell.posX).reverse()[0]
             if(free && cell.posY < free[1]){
-                this.gameBoard[cell.posX][cell.posY] = 0
-                this.gameBoard[free[0]][free[1]] = cell.val
+                this.updateGameBoard(cell.posX, cell.posY, cell.val, free[0], free[1])
             }
         })
+    }
+    updateGameBoard = (x, y, val, targetX, targetY) => {
+        this.gameBoard[x][y] = 0
+        this.gameBoard[targetX][targetY] = val
     }
     cellsToMove = () => {
         const cells = this.gameBoard

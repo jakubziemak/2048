@@ -2,7 +2,7 @@
 <html>
   <head>
     <title>2048</title>
-
+    
     <meta name="viewport" content="width=device-width; initial-scale=1.0" />
     <link rel="preconnect" href="https://fonts.gstatic.com" />
     <link
@@ -10,6 +10,7 @@
       rel="stylesheet"
     />
     <link rel="stylesheet" type="text/css" href="styles.css" media="screen" />
+    <script type="module" src="main.js" defer></script>
   </head>
   <body>
     <div id="app">
@@ -29,7 +30,7 @@
       </header>
 
       <main>
-        <table>
+        <table id="table">
           <tr>
             <td></td>
             <td></td>
@@ -52,9 +53,8 @@
             <td></td>
           </tr>
         </table>
+        <div id="tiles-handler"></div>
       </main>
     </div>
-
-    <script src="main.js"></script>
   </body>
 </html>

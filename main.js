@@ -1,3 +1,5 @@
+import Tile from "./modules/tiles.js"
+
 class Game {
     constructor(){
         this.newTile()
@@ -10,7 +12,7 @@ class Game {
                  [0, 0, 0, 0], 
                  [0, 0, 0, 0]]
     summed = []
-    tiles = {}
+    tiles = []
     moved = false
 
     newTile = () => {
@@ -18,8 +20,11 @@ class Game {
         const randomPos = Math.floor(Math.random() * this.freeSpaces().length)
         const [posY, posX] = this.freeSpaces()[randomPos]
 
-        this.gameBoard[posY][posX] = val        
+        this.gameBoard[posY][posX] = val
+        this.tiles.push(new Tile(val, posX, posY))
+        console.log(this.tiles)
     }
+
     freeSpaces = () => {
         const free = this.gameBoard
             .flat()
@@ -27,6 +32,7 @@ class Game {
             .filter(cell => cell !==undefined)
         return free
     }
+
     move = (direction) => {
         switch(direction){
             case 'ArrowLeft':
@@ -42,12 +48,13 @@ class Game {
                 this.moveDown()
                 break
         }
-        if (this.moved){
-            this.newTile()
-            this.moved = false
-        }
+        // if (this.moved){
+        //     this.newTile()
+        //     this.moved = false
+        // }
         console.table(this.gameBoard)
     }
+
     moveUp = () => {
         this.cellsToMove().forEach(cell => {
             const free = this.freeSpaces().filter(([y, x]) => x == cell.posX && y < cell.posY)[0]
@@ -65,6 +72,7 @@ class Game {
             }
         })
     }
+
     moveDown = () => {
         this.cellsToMove().reverse().forEach(cell => {
             const free = this.freeSpaces().filter(([y, x]) => x == cell.posX && y > cell.posY).reverse()[0]
@@ -82,6 +90,7 @@ class Game {
             }
         })
     }
+
     moveLeft = () => {
         this.cellsToMove().forEach(cell => {
             const free = this.freeSpaces().filter(([y, x]) => y == cell.posY && x < cell.posX)[0]
@@ -99,6 +108,7 @@ class Game {
             }
         })
     }
+
     moveRight = () => {
         this.cellsToMove().reverse().forEach(cell => {
             const free = this.freeSpaces().filter(([y, x]) => y == cell.posY && x > cell.posX).reverse()[0]
@@ -116,6 +126,7 @@ class Game {
             }
         })
     }
+
     updateGameBoard = (cell, target) => {
         const {posX, posY, val} = cell
         const [targetY, targetX] = target
@@ -124,7 +135,9 @@ class Game {
         this.gameBoard[targetY][targetX] = val
 
         this.moved = true
+
     }
+    
     cellsToMove = () => {
         const cells = this.gameBoard
             .flat()

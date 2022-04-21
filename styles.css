@@ -81,3 +81,18 @@ td{
     background-color: #BFAFA0;
     border-radius: 0.5rem;
 }
+#tiles-handler{
+    width: calc(400px - 1rem);
+    height: calc(400px - 1rem);
+    position: absolute;
+    transform: translate(0.5rem, calc(-100% - 0.5rem));
+}
+.tile{
+    border-radius: 0.5rem;
+    position: absolute;
+    font-size: 1.5rem;
+    font-weight: 800;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}

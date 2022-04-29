@@ -38,7 +38,10 @@ export default class Tile{
         newTile.style.background = this.colors[this.value]
         
         div.appendChild(newTile)
+        this.tile = document.querySelector(`#tile${this.id}`)
+
         this.moveTo()
+        this.newTileAnimation()
     }
     
     newPosition = (newX, newY) => {
@@ -49,17 +52,15 @@ export default class Tile{
         this.y = newY
 
         this.moveTo()
-        this.animation(oldX, oldY, this.x, this.y)
+        this.movingAnimation(oldX, oldY, this.x, this.y)
     }
 
     moveTo = () => {
-        const tile = document.querySelector(`#tile${this.id}`)
-        tile.style.top = this.y * (this.height + this.spacing) + 'px'
-        tile.style.left = this.x * (this.height + this.spacing) + 'px'
+        this.tile.style.top = this.y * (this.height + this.spacing) + 'px'
+        this.tile.style.left = this.x * (this.height + this.spacing) + 'px'
     }
 
-    animation = (oldX, oldY, newX, newY) => {
-        const tile = document.querySelector(`#tile${this.id}`)
+    movingAnimation = (oldX, oldY, newX, newY) => {
         const ani = [
             {
                 top: oldY * (this.height + this.spacing) + 'px',
@@ -71,6 +72,15 @@ export default class Tile{
             }
         ]
 
-        tile.animate(ani, 100)
+        this.tile.animate(ani, 100)
+    }
+    
+    newTileAnimation = () => {
+        const ani = [
+            {transform: 'scale(1)'},
+            {transform: 'scale(1.1)'},
+            {transform: 'scale(1)'}
+        ]
+        this.tile.animate(ani, 100)
     }
 }

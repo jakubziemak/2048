@@ -1,4 +1,4 @@
-import Tile from "./modules/tiles.js"
+import Tile from "./modules/tile.js"
 
 class Game {
     constructor(){
@@ -19,10 +19,10 @@ class Game {
         const val = Math.random() < 0.5 ? 2 : 4
         const randomPos = Math.floor(Math.random() * this.freeSpaces().length)
         const [posY, posX] = this.freeSpaces()[randomPos]
+        const tileId = this.tiles.length == 0 ? 0 : this.tiles.slice(-1)[0].id++
 
         this.gameBoard[posY][posX] = val
-        this.tiles.push(new Tile(val, posX, posY))
-        console.log(this.tiles)
+        this.tiles.push(new Tile(val, posX, posY, tileId))
     }
 
     freeSpaces = () => {
@@ -52,7 +52,7 @@ class Game {
         //     this.newTile()
         //     this.moved = false
         // }
-        console.table(this.gameBoard)
+        console.log(this.tiles)
     }
 
     moveUp = () => {
@@ -136,6 +136,7 @@ class Game {
 
         this.moved = true
 
+        this.tiles.filter(({ x, y }) => x == posX && y == posY)[0].newPosition(targetX, targetY)
     }
     
     cellsToMove = () => {
@@ -152,3 +153,5 @@ document.addEventListener('keydown', (e) => {
     e.preventDefault()
     game.move(e.key)
 })
+
+console.log(game.tiles)

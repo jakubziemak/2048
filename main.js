@@ -19,7 +19,7 @@ class Game {
   moved = false;
 
   newTile = () => {
-    const val = Math.random() < 0.5 ? 2 : 4;
+    const val = Math.random() < 1 ? 2 : 4;
     const randomPos = Math.floor(Math.random() * this.freeSpaces().length);
     const [posY, posX] = this.freeSpaces()[randomPos];
     const tileId = this.newId();
@@ -44,31 +44,29 @@ class Game {
   };
 
   move = (direction) => {
-    Promise.all(
-      document.getAnimations().map((animation) => animation.finished)
-    ).then(() => {
-      switch (direction) {
-        case "ArrowLeft":
-          this.moveLeft();
-          break;
-        case "ArrowUp":
-          this.moveUp();
-          break;
-        case "ArrowRight":
-          this.moveRight();
-          break;
-        case "ArrowDown":
-          this.moveDown();
-          break;
-      }
-      this.deleteTiles();
-    });
-
-    // if (this.moved){
-    //     this.newTile()
-    //     this.moved = false
-    // }
-    // console.log(this.gameBoard)
+    console.log(this.tilesToDelete.length);
+    if (this.tilesToDelete.length !== 0) return;
+    switch (direction) {
+      case "ArrowLeft":
+        this.moveLeft();
+        break;
+      case "ArrowUp":
+        this.moveUp();
+        break;
+      case "ArrowRight":
+        this.moveRight();
+        break;
+      case "ArrowDown":
+        this.moveDown();
+        break;
+    }
+    console.log(this.tiles.map((tile) => tile.id));
+    this.deleteTiles();
+    if (this.moved) {
+      this.moved = false;
+      this.newTile();
+    }
+    console.log(this.gameBoard);
   };
 
   moveUp = () => {
@@ -195,30 +193,32 @@ class Game {
         val: val,
         y: targetY,
         x: targetX,
-        id: this.newId(),
+        //id: this.tilesToCreate.length ?  : this.newId(),
       });
     }
   };
 
   deleteTiles = () => {
-    Promise.all(
-      document.getAnimations().map((animation) => animation.finished)
-    ).then(() => {
-      this.tilesToDelete.forEach((id) => {
-        const toDelete = this.tiles.find((tile) => tile.id === id);
-        toDelete.delete();
+    Promise.all(document.getAnimations().map((animation) => animation.finished))
+      .then(() => {
+        this.tilesToDelete.forEach((id) => {
+          const toDelete = this.tiles.find((tile) => tile.id === id);
+          toDelete.delete();
+        });
+      })
+      .then(() => {
+        this.tiles = this.tiles.filter(
+          (tile) => !this.tilesToDelete.includes(tile.id)
+        );
+        console.log(this.tilesToCreate);
+        this.tilesToCreate.forEach(({ y, x, val, id }) => {
+          this.tiles.push(new Tile(val, x, y, this.newId()));
+        });
+      })
+      .then(() => {
+        this.tilesToDelete = [];
+        this.tilesToCreate = [];
       });
-      this.tiles = this.tiles.filter(
-        (tile) => !this.tilesToDelete.includes(tile.id)
-      );
-
-      this.tilesToCreate.forEach(({ y, x, val, id }) => {
-        this.tiles.push(new Tile(val, x, y, id));
-      });
-
-      this.tilesToCreate = [];
-      this.tilesToDelete = [];
-    });
   };
 
   cellsToMove = () => {

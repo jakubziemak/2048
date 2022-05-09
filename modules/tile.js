@@ -83,4 +83,8 @@ export default class Tile{
         ]
         this.tile.animate(ani, 100)
     }
+
+    delete = () => {
+        this.tile.remove()
+    }
 }

@@ -74,7 +74,7 @@ export default class Tile {
       },
     ];
 
-    this.tile.animate(ani, 100);
+    this.tile.animate(ani, 150);
   };
 
   newTileAnimation = () => {
@@ -83,7 +83,7 @@ export default class Tile {
       { transform: "scale(1.1)" },
       { transform: "scale(1)" },
     ];
-    this.tile.animate(ani, 100);
+    this.tile.animate(ani, 150);
   };
 
   delete = () => {

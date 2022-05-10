@@ -14,7 +14,7 @@ body {
   background-color: papayawhip;
   width: 100%;
   max-width: 400px;
-  border-radius: 1rem;
+  /* border-radius: 1rem; */
 }
 
 header {
@@ -24,7 +24,7 @@ header {
   row-gap: 0.5rem;
 }
 header > *:not(:last-child) {
-  border-radius: 0.5rem;
+  /* border-radius: 0.5rem; */
   color: white;
   overflow: hidden;
   font-weight: 600;
@@ -74,12 +74,12 @@ table {
   height: 400px;
   background-color: #a49381;
   margin-top: 1rem;
-  border-radius: 1rem;
+  /* border-radius: 1rem; */
   border-spacing: 0.5rem;
 }
 td {
   background-color: #bfafa0;
-  border-radius: 0.5rem;
+  /* border-radius: 0.5rem; */
 }
 #tiles-handler {
   width: calc(400px - 1rem);
@@ -88,7 +88,7 @@ td {
   transform: translate(0.5rem, calc(-100% - 0.5rem));
 }
 .tile {
-  border-radius: 0.5rem;
+  /* border-radius: 0.5rem; */
   position: absolute;
   font-size: 1.5rem;
   font-weight: 800;

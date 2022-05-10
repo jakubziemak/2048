@@ -37,7 +37,8 @@ export default class Tile {
 
     newTile.style.height = this.height + "px";
     newTile.style.width = this.width + "px";
-    newTile.style.background = this.colors[this.value];
+    newTile.style.background =
+      this.value > 2048 ? this.colors[2048] : this.colors[this.value];
 
     div.appendChild(newTile);
     this.tile = document.querySelector(`#tile${this.id}`);

@@ -17,7 +17,6 @@ export default class Game {
   tilesToDelete = [];
   tilesToCreate = [];
   moved = false;
-  // deleting = new Promise((res) => res());
 
   newTile = () => {
     const val = Math.random() < 0.5 ? 2 : 4;
@@ -51,19 +50,21 @@ export default class Game {
     switch (direction) {
       case "ArrowLeft":
         this.moveLeft();
+        this.deleteTiles();
         break;
       case "ArrowUp":
         this.moveUp();
+        this.deleteTiles();
         break;
       case "ArrowRight":
         this.moveRight();
+        this.deleteTiles();
         break;
       case "ArrowDown":
         this.moveDown();
+        this.deleteTiles();
         break;
     }
-
-    this.deleteTiles();
   };
 
   moveUp = () => {
@@ -251,5 +252,24 @@ export default class Game {
       })
       .filter((cell) => cell !== undefined);
     return cells;
+  };
+
+  newGame = () => {
+    this.gameBoard = [
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+    ];
+
+    this.tiles.forEach((tile) => tile.delete());
+
+    this.tiles = [];
+    this.tilesToDelete = [];
+    this.tilesToCreate = [];
+    this.moved = false;
+
+    this.newTile();
+    this.newTile();
   };
 }

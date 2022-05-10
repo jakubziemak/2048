@@ -16,10 +16,11 @@ export default class Game {
   tiles = [];
   tilesToDelete = [];
   tilesToCreate = [];
+  previousGameBoard = [];
   moved = false;
 
   newTile = () => {
-    const val = Math.random() < 0.5 ? 2 : 4;
+    const val = Math.random() < 0.9 ? 2 : 4;
     const randomPos = Math.floor(Math.random() * this.freeSpaces().length);
     const [posY, posX] = this.freeSpaces()[randomPos];
     const tileId = this.newId();
@@ -81,6 +82,7 @@ export default class Game {
       if (cell.posY == 0) return;
 
       if (this.gameBoard[cell.posY - 1][cell.posX] == cell.val) {
+        this.saveGameBoard();
         cell.val += cell.val;
         this.updateGameBoard(cell, [cell.posY - 1, cell.posX], true);
       } else if (
@@ -89,9 +91,11 @@ export default class Game {
         this.gameBoard[free[0] - 1][free[1]] == cell.val &&
         isSummed
       ) {
+        this.saveGameBoard();
         cell.val += cell.val;
         this.updateGameBoard(cell, [free[0] - 1, free[1]], true);
       } else if (free && cell.posY > free[0]) {
+        this.saveGameBoard();
         this.updateGameBoard(cell, free);
       }
     });
@@ -113,6 +117,7 @@ export default class Game {
         if (cell.posY == 3) return;
 
         if (this.gameBoard[cell.posY + 1][cell.posX] == cell.val) {
+          this.saveGameBoard();
           cell.val += cell.val;
           this.updateGameBoard(cell, [cell.posY + 1, cell.posX], true);
         } else if (
@@ -121,9 +126,11 @@ export default class Game {
           this.gameBoard[free[0] + 1][free[1]] == cell.val &&
           isSummed
         ) {
+          this.saveGameBoard();
           cell.val += cell.val;
           this.updateGameBoard(cell, [free[0] + 1, free[1]], true);
         } else if (free && cell.posY < free[0]) {
+          this.saveGameBoard();
           this.updateGameBoard(cell, free);
         }
       });
@@ -143,6 +150,7 @@ export default class Game {
       if (cell.posX == 0) return;
 
       if (this.gameBoard[cell.posY][cell.posX - 1] == cell.val) {
+        this.saveGameBoard();
         cell.val += cell.val;
         this.updateGameBoard(cell, [cell.posY, cell.posX - 1], true);
       } else if (
@@ -151,9 +159,11 @@ export default class Game {
         this.gameBoard[free[0]][free[1] - 1] == cell.val &&
         isSummed
       ) {
+        this.saveGameBoard();
         cell.val += cell.val;
         this.updateGameBoard(cell, [free[0], free[1] - 1], true);
       } else if (free && cell.posX > free[1]) {
+        this.saveGameBoard();
         this.updateGameBoard(cell, free);
       }
     });
@@ -175,6 +185,7 @@ export default class Game {
         if (cell.posX == 3) return;
 
         if (this.gameBoard[cell.posY][cell.posX + 1] == cell.val) {
+          this.saveGameBoard();
           cell.val += cell.val;
           this.updateGameBoard(cell, [cell.posY, cell.posX + 1], true);
         } else if (
@@ -183,9 +194,11 @@ export default class Game {
           this.gameBoard[free[0]][free[1] + 1] == cell.val &&
           isSummed
         ) {
+          this.saveGameBoard();
           cell.val += cell.val;
           this.updateGameBoard(cell, [free[0], free[1] + 1], true);
         } else if (free && cell.posX < free[1]) {
+          this.saveGameBoard();
           this.updateGameBoard(cell, free);
         }
       });
@@ -226,12 +239,15 @@ export default class Game {
           const toDelete = this.tiles.find((tile) => tile.id === id);
           toDelete.delete();
         });
+
         this.tiles = this.tiles.filter(
           (tile) => !this.tilesToDelete.includes(tile.id)
         );
+
         this.tilesToCreate.forEach(({ y, x, val }) => {
           this.tiles.push(new Tile(val, x, y, this.newId()));
         });
+
         this.tilesToDelete = [];
         this.tilesToCreate = [];
       })
@@ -239,7 +255,6 @@ export default class Game {
         if (this.moved) {
           this.newTile();
         }
-        console.table(this.gameBoard);
       });
   };
 
@@ -262,14 +277,41 @@ export default class Game {
       [0, 0, 0, 0],
     ];
 
+    this.clearInfo();
+
+    this.newTile();
+    this.newTile();
+  };
+
+  saveGameBoard = () => {
+    if (
+      this.moved ||
+      this.previousGameBoard.flat().join("") === this.gameBoard.flat().join("")
+    ) {
+      return;
+    }
+    this.previousGameBoard = JSON.parse(JSON.stringify(this.gameBoard));
+  };
+
+  loadGameBoard = () => {
+    this.gameBoard = JSON.parse(JSON.stringify(this.previousGameBoard));
+    this.clearInfo();
+
+    this.gameBoard.flat().forEach((value, i) => {
+      if (value) {
+        this.tiles.push(
+          new Tile(value, i % 4, Math.floor(i / 4), this.newId())
+        );
+      }
+    });
+  };
+
+  clearInfo = () => {
     this.tiles.forEach((tile) => tile.delete());
 
     this.tiles = [];
     this.tilesToDelete = [];
     this.tilesToCreate = [];
     this.moved = false;
-
-    this.newTile();
-    this.newTile();
   };
 }

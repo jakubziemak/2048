@@ -17,19 +17,21 @@ class Game {
   tilesToDelete = [];
   tilesToCreate = [];
   moved = false;
+  // deleting = new Promise((res) => res());
 
   newTile = () => {
-    const val = Math.random() < 1 ? 2 : 4;
+    const val = Math.random() < 0.5 ? 2 : 4;
     const randomPos = Math.floor(Math.random() * this.freeSpaces().length);
     const [posY, posX] = this.freeSpaces()[randomPos];
     const tileId = this.newId();
 
     this.gameBoard[posY][posX] = val;
     this.tiles.push(new Tile(val, posX, posY, tileId));
+
+    this.moved = false;
   };
 
   newId = () => {
-    console.log(this.tiles.length == 0 ? 0 : this.tiles.slice(-1)[0].id + 1);
     return this.tiles.length == 0 ? 0 : this.tiles.slice(-1)[0].id + 1;
   };
 
@@ -44,8 +46,8 @@ class Game {
   };
 
   move = (direction) => {
-    console.log(this.tilesToDelete.length);
-    if (this.tilesToDelete.length !== 0) return;
+    if (this.moved) return;
+
     switch (direction) {
       case "ArrowLeft":
         this.moveLeft();
@@ -60,13 +62,8 @@ class Game {
         this.moveDown();
         break;
     }
-    console.log(this.tiles.map((tile) => tile.id));
+
     this.deleteTiles();
-    if (this.moved) {
-      this.moved = false;
-      this.newTile();
-    }
-    console.log(this.gameBoard);
   };
 
   moveUp = () => {
@@ -74,6 +71,11 @@ class Game {
       const free = this.freeSpaces().filter(
         ([y, x]) => x == cell.posX && y < cell.posY
       )[0];
+
+      const isSummed =
+        this.tilesToCreate.filter(
+          ({ x, y }) => free && y == free[0] - 1 && x == free[1]
+        ).length == 0;
 
       if (cell.posY == 0) return;
 
@@ -83,7 +85,8 @@ class Game {
       } else if (
         free &&
         free[0] > 0 &&
-        this.gameBoard[free[0] - 1][free[1]] == cell.val
+        this.gameBoard[free[0] - 1][free[1]] == cell.val &&
+        isSummed
       ) {
         cell.val += cell.val;
         this.updateGameBoard(cell, [free[0] - 1, free[1]], true);
@@ -101,6 +104,11 @@ class Game {
           .filter(([y, x]) => x == cell.posX && y > cell.posY)
           .reverse()[0];
 
+        const isSummed =
+          this.tilesToCreate.filter(
+            ({ x, y }) => free && y == free[0] + 1 && x == free[1]
+          ).length == 0;
+
         if (cell.posY == 3) return;
 
         if (this.gameBoard[cell.posY + 1][cell.posX] == cell.val) {
@@ -109,7 +117,8 @@ class Game {
         } else if (
           free &&
           free[0] < 3 &&
-          this.gameBoard[free[0] + 1][free[1]] == cell.val
+          this.gameBoard[free[0] + 1][free[1]] == cell.val &&
+          isSummed
         ) {
           cell.val += cell.val;
           this.updateGameBoard(cell, [free[0] + 1, free[1]], true);
@@ -125,6 +134,11 @@ class Game {
         ([y, x]) => y == cell.posY && x < cell.posX
       )[0];
 
+      const isSummed =
+        this.tilesToCreate.filter(
+          ({ x, y }) => free && y == free[0] && x == free[1] - 1
+        ).length == 0;
+
       if (cell.posX == 0) return;
 
       if (this.gameBoard[cell.posY][cell.posX - 1] == cell.val) {
@@ -133,7 +147,8 @@ class Game {
       } else if (
         free &&
         free[1] > 0 &&
-        this.gameBoard[free[0]][free[1] - 1] == cell.val
+        this.gameBoard[free[0]][free[1] - 1] == cell.val &&
+        isSummed
       ) {
         cell.val += cell.val;
         this.updateGameBoard(cell, [free[0], free[1] - 1], true);
@@ -151,6 +166,11 @@ class Game {
           .filter(([y, x]) => y == cell.posY && x > cell.posX)
           .reverse()[0];
 
+        const isSummed =
+          this.tilesToCreate.filter(
+            ({ x, y }) => free && y == free[0] && x == free[1] + 1
+          ).length == 0;
+
         if (cell.posX == 3) return;
 
         if (this.gameBoard[cell.posY][cell.posX + 1] == cell.val) {
@@ -159,7 +179,8 @@ class Game {
         } else if (
           free &&
           free[1] < 3 &&
-          this.gameBoard[free[0]][free[1] + 1] == cell.val
+          this.gameBoard[free[0]][free[1] + 1] == cell.val &&
+          isSummed
         ) {
           cell.val += cell.val;
           this.updateGameBoard(cell, [free[0], free[1] + 1], true);
@@ -193,7 +214,6 @@ class Game {
         val: val,
         y: targetY,
         x: targetX,
-        //id: this.tilesToCreate.length ?  : this.newId(),
       });
     }
   };
@@ -205,19 +225,20 @@ class Game {
           const toDelete = this.tiles.find((tile) => tile.id === id);
           toDelete.delete();
         });
-      })
-      .then(() => {
         this.tiles = this.tiles.filter(
           (tile) => !this.tilesToDelete.includes(tile.id)
         );
-        console.log(this.tilesToCreate);
-        this.tilesToCreate.forEach(({ y, x, val, id }) => {
+        this.tilesToCreate.forEach(({ y, x, val }) => {
           this.tiles.push(new Tile(val, x, y, this.newId()));
         });
-      })
-      .then(() => {
         this.tilesToDelete = [];
         this.tilesToCreate = [];
+      })
+      .then(() => {
+        if (this.moved) {
+          this.newTile();
+        }
+        console.table(this.gameBoard);
       });
   };
 

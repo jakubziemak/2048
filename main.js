@@ -14,5 +14,5 @@ newGame.addEventListener("click", () => {
 });
 
 undo.addEventListener("click", () => {
-  game.loadGameBoard();
+  game.gameOverScreen(false);
 });

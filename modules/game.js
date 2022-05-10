@@ -6,7 +6,7 @@ export default class Game {
     this.newTile();
   }
 
-  gameBoard = [
+  board = [
     [0, 0, 0, 0],
     [0, 0, 0, 0],
     [0, 0, 0, 0],
@@ -16,7 +16,7 @@ export default class Game {
   tiles = [];
   tilesToDelete = [];
   tilesToCreate = [];
-  previousGameBoard = [];
+  previousBoard = [];
   moved = false;
 
   newTile = () => {
@@ -25,7 +25,7 @@ export default class Game {
     const [posY, posX] = this.freeSpaces()[randomPos];
     const tileId = this.newId();
 
-    this.gameBoard[posY][posX] = val;
+    this.board[posY][posX] = val;
     this.tiles.push(new Tile(val, posX, posY, tileId));
 
     this.moved = false;
@@ -36,7 +36,7 @@ export default class Game {
   };
 
   freeSpaces = () => {
-    const free = this.gameBoard
+    const free = this.board
       .flat()
       .map((cell, i) => {
         if (cell == 0) return [Math.floor(i / 4), i % 4];
@@ -66,6 +66,9 @@ export default class Game {
         this.deleteTiles();
         break;
     }
+    if (!this.legalMoves()) {
+      this.gameOverScreen(false);
+    }
   };
 
   moveUp = () => {
@@ -81,22 +84,22 @@ export default class Game {
 
       if (cell.posY == 0) return;
 
-      if (this.gameBoard[cell.posY - 1][cell.posX] == cell.val) {
-        this.saveGameBoard();
+      if (this.board[cell.posY - 1][cell.posX] == cell.val) {
+        this.saveBoard();
         cell.val += cell.val;
-        this.updateGameBoard(cell, [cell.posY - 1, cell.posX], true);
+        this.updateBoard(cell, [cell.posY - 1, cell.posX], true);
       } else if (
         free &&
         free[0] > 0 &&
-        this.gameBoard[free[0] - 1][free[1]] == cell.val &&
+        this.board[free[0] - 1][free[1]] == cell.val &&
         isSummed
       ) {
-        this.saveGameBoard();
+        this.saveBoard();
         cell.val += cell.val;
-        this.updateGameBoard(cell, [free[0] - 1, free[1]], true);
+        this.updateBoard(cell, [free[0] - 1, free[1]], true);
       } else if (free && cell.posY > free[0]) {
-        this.saveGameBoard();
-        this.updateGameBoard(cell, free);
+        this.saveBoard();
+        this.updateBoard(cell, free);
       }
     });
   };
@@ -116,22 +119,22 @@ export default class Game {
 
         if (cell.posY == 3) return;
 
-        if (this.gameBoard[cell.posY + 1][cell.posX] == cell.val) {
-          this.saveGameBoard();
+        if (this.board[cell.posY + 1][cell.posX] == cell.val) {
+          this.saveBoard();
           cell.val += cell.val;
-          this.updateGameBoard(cell, [cell.posY + 1, cell.posX], true);
+          this.updateBoard(cell, [cell.posY + 1, cell.posX], true);
         } else if (
           free &&
           free[0] < 3 &&
-          this.gameBoard[free[0] + 1][free[1]] == cell.val &&
+          this.board[free[0] + 1][free[1]] == cell.val &&
           isSummed
         ) {
-          this.saveGameBoard();
+          this.saveBoard();
           cell.val += cell.val;
-          this.updateGameBoard(cell, [free[0] + 1, free[1]], true);
+          this.updateBoard(cell, [free[0] + 1, free[1]], true);
         } else if (free && cell.posY < free[0]) {
-          this.saveGameBoard();
-          this.updateGameBoard(cell, free);
+          this.saveBoard();
+          this.updateBoard(cell, free);
         }
       });
   };
@@ -149,22 +152,22 @@ export default class Game {
 
       if (cell.posX == 0) return;
 
-      if (this.gameBoard[cell.posY][cell.posX - 1] == cell.val) {
-        this.saveGameBoard();
+      if (this.board[cell.posY][cell.posX - 1] == cell.val) {
+        this.saveBoard();
         cell.val += cell.val;
-        this.updateGameBoard(cell, [cell.posY, cell.posX - 1], true);
+        this.updateBoard(cell, [cell.posY, cell.posX - 1], true);
       } else if (
         free &&
         free[1] > 0 &&
-        this.gameBoard[free[0]][free[1] - 1] == cell.val &&
+        this.board[free[0]][free[1] - 1] == cell.val &&
         isSummed
       ) {
-        this.saveGameBoard();
+        this.saveBoard();
         cell.val += cell.val;
-        this.updateGameBoard(cell, [free[0], free[1] - 1], true);
+        this.updateBoard(cell, [free[0], free[1] - 1], true);
       } else if (free && cell.posX > free[1]) {
-        this.saveGameBoard();
-        this.updateGameBoard(cell, free);
+        this.saveBoard();
+        this.updateBoard(cell, free);
       }
     });
   };
@@ -184,32 +187,32 @@ export default class Game {
 
         if (cell.posX == 3) return;
 
-        if (this.gameBoard[cell.posY][cell.posX + 1] == cell.val) {
-          this.saveGameBoard();
+        if (this.board[cell.posY][cell.posX + 1] == cell.val) {
+          this.saveBoard();
           cell.val += cell.val;
-          this.updateGameBoard(cell, [cell.posY, cell.posX + 1], true);
+          this.updateBoard(cell, [cell.posY, cell.posX + 1], true);
         } else if (
           free &&
           free[1] < 3 &&
-          this.gameBoard[free[0]][free[1] + 1] == cell.val &&
+          this.board[free[0]][free[1] + 1] == cell.val &&
           isSummed
         ) {
-          this.saveGameBoard();
+          this.saveBoard();
           cell.val += cell.val;
-          this.updateGameBoard(cell, [free[0], free[1] + 1], true);
+          this.updateBoard(cell, [free[0], free[1] + 1], true);
         } else if (free && cell.posX < free[1]) {
-          this.saveGameBoard();
-          this.updateGameBoard(cell, free);
+          this.saveBoard();
+          this.updateBoard(cell, free);
         }
       });
   };
 
-  updateGameBoard = (cell, target, summed = false) => {
+  updateBoard = (cell, target, summed = false) => {
     const { posX, posY, val } = cell;
     const [targetY, targetX] = target;
 
-    this.gameBoard[posY][posX] = 0;
-    this.gameBoard[targetY][targetX] = val;
+    this.board[posY][posX] = 0;
+    this.board[targetY][targetX] = val;
 
     this.moved = true;
     this.tiles
@@ -233,33 +236,33 @@ export default class Game {
   };
 
   deleteTiles = () => {
-    Promise.all(document.getAnimations().map((animation) => animation.finished))
-      .then(() => {
-        this.tilesToDelete.forEach((id) => {
-          const toDelete = this.tiles.find((tile) => tile.id === id);
-          toDelete.delete();
-        });
-
-        this.tiles = this.tiles.filter(
-          (tile) => !this.tilesToDelete.includes(tile.id)
-        );
-
-        this.tilesToCreate.forEach(({ y, x, val }) => {
-          this.tiles.push(new Tile(val, x, y, this.newId()));
-        });
-
-        this.tilesToDelete = [];
-        this.tilesToCreate = [];
-      })
-      .then(() => {
-        if (this.moved) {
-          this.newTile();
-        }
+    Promise.all(
+      document.getAnimations().map((animation) => animation.finished)
+    ).then(() => {
+      this.tilesToDelete.forEach((id) => {
+        const toDelete = this.tiles.find((tile) => tile.id === id);
+        toDelete.delete();
       });
+
+      this.tiles = this.tiles.filter(
+        (tile) => !this.tilesToDelete.includes(tile.id)
+      );
+
+      this.tilesToCreate.forEach(({ y, x, val }) => {
+        this.tiles.push(new Tile(val, x, y, this.newId()));
+      });
+
+      this.tilesToDelete = [];
+      this.tilesToCreate = [];
+
+      if (this.moved) {
+        this.newTile();
+      }
+    });
   };
 
   cellsToMove = () => {
-    const cells = this.gameBoard
+    const cells = this.board
       .flat()
       .map((val, i) => {
         if (val !== 0)
@@ -270,7 +273,9 @@ export default class Game {
   };
 
   newGame = () => {
-    this.gameBoard = [
+    this.gameOverScreen(true);
+
+    this.board = [
       [0, 0, 0, 0],
       [0, 0, 0, 0],
       [0, 0, 0, 0],
@@ -283,21 +288,23 @@ export default class Game {
     this.newTile();
   };
 
-  saveGameBoard = () => {
+  saveBoard = () => {
     if (
       this.moved ||
-      this.previousGameBoard.flat().join("") === this.gameBoard.flat().join("")
+      this.previousBoard.flat().join("") === this.board.flat().join("")
     ) {
       return;
     }
-    this.previousGameBoard = JSON.parse(JSON.stringify(this.gameBoard));
+    this.previousBoard = JSON.parse(JSON.stringify(this.board));
   };
 
-  loadGameBoard = () => {
-    this.gameBoard = JSON.parse(JSON.stringify(this.previousGameBoard));
+  loadBoard = () => {
+    if (!this.previousBoard.length) return;
+
+    this.board = JSON.parse(JSON.stringify(this.previousBoard));
     this.clearInfo();
 
-    this.gameBoard.flat().forEach((value, i) => {
+    this.board.flat().forEach((value, i) => {
       if (value) {
         this.tiles.push(
           new Tile(value, i % 4, Math.floor(i / 4), this.newId())
@@ -313,5 +320,33 @@ export default class Game {
     this.tilesToDelete = [];
     this.tilesToCreate = [];
     this.moved = false;
+  };
+
+  legalMoves = () => {
+    const arr = this.board.flat();
+
+    if (arr.includes(0)) return true;
+
+    for (let i = 0; i < arr.length - 1; i++) {
+      if ((i % 4 !== 3 && arr[i] == arr[i + 1]) || arr[i] == arr[i + 4]) {
+        return true;
+      }
+    }
+
+    return false;
+  };
+
+  gameOverScreen = (boolean) => {
+    const appear = [{ opacity: "0" }, { opacity: "1" }];
+    const disappear = [{ opacity: "1" }, { opacity: "0" }];
+    const options = { duration: 300, fill: "forwards" };
+    const screen = document.querySelector("#game-over");
+
+    if (boolean && window.getComputedStyle(screen).opacity == 0) return;
+    if (!boolean && window.getComputedStyle(screen).opacity == 1) return;
+
+    boolean
+      ? screen.animate(disappear, options)
+      : screen.animate(appear, options);
   };
 }

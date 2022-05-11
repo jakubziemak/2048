@@ -3,25 +3,24 @@
   padding: 0;
   font-family: "Roboto", sans-serif;
 }
+html {
+  height: 100%;
+  width: 100%;
+}
 body {
-  height: 100vh;
-  background-color: #666666;
+  height: 100%;
+  width: 100%;
+  background-color: papayawhip;
   display: flex;
   justify-content: center;
   align-items: center;
 }
-#app {
-  padding: 1rem;
-  background-color: papayawhip;
-  width: 100%;
-  max-width: 400px;
-}
-
 header {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   column-gap: 0.5rem;
   row-gap: 0.5rem;
+  font-size: 0.8rem;
 }
 header > *:not(:last-child) {
   color: white;
@@ -61,6 +60,9 @@ button {
 button:hover {
   background-color: #fc7d63;
 }
+button:active {
+  box-shadow: inset 0 0 10px black;
+}
 h2 {
   grid-column-start: 1;
   grid-column-end: 4;
@@ -73,8 +75,8 @@ main {
 }
 
 table {
-  width: 400px;
-  height: 400px;
+  width: var(--width);
+  height: var(--width);
   background-color: #a49381;
   margin-top: 1rem;
   border-spacing: 0.5rem;
@@ -83,8 +85,8 @@ td {
   background-color: #bfafa0;
 }
 #tiles-handler {
-  width: calc(400px - 1rem);
-  height: calc(400px - 1rem);
+  width: calc(var(--width) - 1rem);
+  height: calc(var(--width) - 1rem);
   position: absolute;
   transform: translate(0.5rem, calc(-100% - 0.5rem));
 }
@@ -112,4 +114,24 @@ td {
 h3 {
   font-weight: 900;
   font-size: 2.5rem;
+}
+
+@media screen and (min-width: 700px) {
+  body {
+    background-color: #666666;
+  }
+  #app {
+    padding: 1rem;
+    background-color: papayawhip;
+    width: 100%;
+    max-width: 400px;
+  }
+  table {
+    max-width: 400px;
+    max-height: 400px;
+  }
+  #tiles-handler {
+    max-width: calc(400px - 1rem);
+    max-height: calc(400px - 1rem);
+  }
 }

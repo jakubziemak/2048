@@ -23,6 +23,11 @@ export default class Game {
   prevScore = 0;
   moved = false;
 
+  touchStartX;
+  touchStartY;
+  touchEndX;
+  touchEndY;
+
   newTile = () => {
     const val = Math.random() < 0.9 ? 2 : 4;
     const randomPos = Math.floor(Math.random() * this.freeSpaces().length);
@@ -47,6 +52,24 @@ export default class Game {
       })
       .filter((cell) => cell !== undefined);
     return free;
+  };
+
+  touchStart = (e) => {
+    this.touchStartX = e.changedTouches[0].screenX;
+    this.touchStartY = e.changedTouches[0].screenY;
+  };
+
+  touchEnd = (e) => {
+    this.touchEndX = e.changedTouches[0].screenX;
+    this.touchEndY = e.changedTouches[0].screenY;
+
+    const dirX = this.touchStartX - this.touchEndX;
+    const dirY = this.touchStartY - this.touchEndY;
+
+    if (Math.abs(dirX) > Math.abs(dirY) && dirX > 0) this.move("ArrowLeft");
+    if (Math.abs(dirX) > Math.abs(dirY) && dirX < 0) this.move("ArrowRight");
+    if (Math.abs(dirX) < Math.abs(dirY) && dirY > 0) this.move("ArrowUp");
+    if (Math.abs(dirX) < Math.abs(dirY) && dirY < 0) this.move("ArrowDown");
   };
 
   move = (direction) => {

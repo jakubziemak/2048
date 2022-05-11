@@ -4,6 +4,8 @@ export default class Game {
   constructor() {
     this.newTile();
     this.newTile();
+
+    this.loadBestScore();
   }
 
   board = [
@@ -17,6 +19,8 @@ export default class Game {
   tilesToDelete = [];
   tilesToCreate = [];
   previousBoard = [];
+  score = 0;
+  prevScore = 0;
   moved = false;
 
   newTile = () => {
@@ -87,6 +91,7 @@ export default class Game {
       if (this.board[cell.posY - 1][cell.posX] == cell.val) {
         this.saveBoard();
         cell.val += cell.val;
+        this.updateScore(cell.val);
         this.updateBoard(cell, [cell.posY - 1, cell.posX], true);
       } else if (
         free &&
@@ -96,6 +101,7 @@ export default class Game {
       ) {
         this.saveBoard();
         cell.val += cell.val;
+        this.updateScore(cell.val);
         this.updateBoard(cell, [free[0] - 1, free[1]], true);
       } else if (free && cell.posY > free[0]) {
         this.saveBoard();
@@ -122,6 +128,7 @@ export default class Game {
         if (this.board[cell.posY + 1][cell.posX] == cell.val) {
           this.saveBoard();
           cell.val += cell.val;
+          this.updateScore(cell.val);
           this.updateBoard(cell, [cell.posY + 1, cell.posX], true);
         } else if (
           free &&
@@ -131,6 +138,7 @@ export default class Game {
         ) {
           this.saveBoard();
           cell.val += cell.val;
+          this.updateScore(cell.val);
           this.updateBoard(cell, [free[0] + 1, free[1]], true);
         } else if (free && cell.posY < free[0]) {
           this.saveBoard();
@@ -155,6 +163,7 @@ export default class Game {
       if (this.board[cell.posY][cell.posX - 1] == cell.val) {
         this.saveBoard();
         cell.val += cell.val;
+        this.updateScore(cell.val);
         this.updateBoard(cell, [cell.posY, cell.posX - 1], true);
       } else if (
         free &&
@@ -164,6 +173,7 @@ export default class Game {
       ) {
         this.saveBoard();
         cell.val += cell.val;
+        this.updateScore(cell.val);
         this.updateBoard(cell, [free[0], free[1] - 1], true);
       } else if (free && cell.posX > free[1]) {
         this.saveBoard();
@@ -190,6 +200,7 @@ export default class Game {
         if (this.board[cell.posY][cell.posX + 1] == cell.val) {
           this.saveBoard();
           cell.val += cell.val;
+          this.updateScore(cell.val);
           this.updateBoard(cell, [cell.posY, cell.posX + 1], true);
         } else if (
           free &&
@@ -199,6 +210,7 @@ export default class Game {
         ) {
           this.saveBoard();
           cell.val += cell.val;
+          this.updateScore(cell.val);
           this.updateBoard(cell, [free[0], free[1] + 1], true);
         } else if (free && cell.posX < free[1]) {
           this.saveBoard();
@@ -232,6 +244,29 @@ export default class Game {
         y: targetY,
         x: targetX,
       });
+    }
+  };
+
+  updateScore = (val) => {
+    const currScore = document.querySelector("#score");
+    const bestScore = document.querySelector("#best-score");
+
+    this.score += val;
+    currScore.innerHTML = this.score;
+
+    if (localStorage.getItem("bestScore") < this.score) {
+      bestScore.innerHTML = this.score;
+      localStorage.setItem("bestScore", this.score);
+    }
+  };
+
+  loadBestScore = () => {
+    const bestScore = document.querySelector("#best-score");
+
+    if (!localStorage.getItem("bestScore")) {
+      localStorage.setItem("bestScore", 0);
+    } else {
+      bestScore.innerHTML = localStorage.getItem("bestScore");
     }
   };
 
@@ -283,6 +318,8 @@ export default class Game {
     ];
 
     this.clearInfo();
+    const currScore = document.querySelector("#score");
+    currScore.innerHTML = this.score;
 
     this.newTile();
     this.newTile();
@@ -296,10 +333,13 @@ export default class Game {
       return;
     }
     this.previousBoard = JSON.parse(JSON.stringify(this.board));
+    this.prevScore = this.score;
   };
 
   loadBoard = () => {
     if (!this.previousBoard.length) return;
+
+    const currScore = document.querySelector("#score");
 
     this.board = JSON.parse(JSON.stringify(this.previousBoard));
     this.clearInfo();
@@ -311,11 +351,14 @@ export default class Game {
         );
       }
     });
+
+    currScore.innerHTML = this.score = this.prevScore;
   };
 
   clearInfo = () => {
     this.tiles.forEach((tile) => tile.delete());
 
+    this.score = 0;
     this.tiles = [];
     this.tilesToDelete = [];
     this.tilesToCreate = [];
